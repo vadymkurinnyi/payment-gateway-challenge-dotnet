@@ -1,4 +1,8 @@
-using PaymentGateway.Api.Services;
+using PaymentGateway.Api.Payments;
+using PaymentGateway.Api.Payments.Process;
+using PaymentGateway.Api.Payments.Process.Banking;
+using PaymentGateway.Api.Payments.Retrieve;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +13,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<PaymentsRepository>();
+// Register Refit client for bank simulator
+var bankBaseUrl = builder.Configuration["BankSimulator:BaseUrl"] ?? "http://localhost:8080";
+builder.Services.AddRefitClient<IBankClient>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(bankBaseUrl));
+
+builder.Services.AddSingleton<PaymentService>();
+builder.Services.AddSingleton<IPaymentProcessor>(sp => sp.GetRequiredService<PaymentService>());
+builder.Services.AddSingleton<IPaymentRetriever>(sp => sp.GetRequiredService<PaymentService>());
+builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
 
