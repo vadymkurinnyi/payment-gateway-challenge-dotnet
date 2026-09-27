@@ -69,7 +69,7 @@ public class PaymentService(IBankClient bankClient, ILogger<PaymentService> logg
 
     }
 
-    public async Task<ErrorOr<Payment>> RetrieveAsync(Guid id, CancellationToken ct)
+    public async Task<ErrorOr<Payment>> GetAsync(Guid id, CancellationToken ct)
     {
         if (!_storage.TryGetValue(id, out (Payment Payment, BankPaymentResponse) value))
             return Error.NotFound();

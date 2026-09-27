@@ -4,13 +4,13 @@ namespace PaymentGateway.Api.Payments;
 
 public class PaymentResponse
 {
-    public required Guid Id { get; set; }
-    public required PaymentStatus Status { get; set; }
-    public required string CardNumberLastFour { get; set; }
-    public required int ExpiryMonth { get; set; }
-    public required int ExpiryYear { get; set; }
-    public required string Currency { get; set; }
-    public required uint Amount { get; set; }
+    public required Guid Id { get; init; }
+    public required PaymentStatus Status { get; init; }
+    public required string CardNumberLastFour { get; init; }
+    public required int ExpiryMonth { get; init; }
+    public required int ExpiryYear { get; init; }
+    public required string Currency { get; init; }
+    public required uint Amount { get; init; }
 
     public static PaymentResponse From(Payment payment) =>
         new ()

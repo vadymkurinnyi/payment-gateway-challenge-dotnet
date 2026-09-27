@@ -4,7 +4,7 @@ namespace PaymentGateway.Api.Payments.Process;
 
 public record NewPayment
 {
-    private static readonly HashSet<string> AllowedCurrencies = new() { "USD", "EUR", "GBP" };
+    private static readonly HashSet<string> AllowedCurrencies = ["USD", "EUR", "GBP"];
 
     public string CardNumber { get; }
     public int ExpiryMonth { get; }

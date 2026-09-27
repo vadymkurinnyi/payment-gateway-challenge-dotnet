@@ -26,7 +26,7 @@ public class PaymentsControllerTests
         {
             Id = paymentId,
             Status = PaymentStatus.Authorized,
-            ExpiryYear = _random.Next(2023, 2030),
+            ExpiryYear = DateTime.UtcNow.Year + _random.Next(1, 5),
             ExpiryMonth = _random.Next(1, 12),
             Amount = (uint)_random.Next(1, 10000),
             CardNumberLastFour = _random.Next(1111, 9999).ToString(),
@@ -44,10 +44,7 @@ public class PaymentsControllerTests
             Code = "auth123"
         };
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.OK),
-            bankResponse,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.OK, bankResponse);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -112,10 +109,7 @@ public class PaymentsControllerTests
             Code = "decline123"
         };
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.OK),
-            bankResponse,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.OK, bankResponse);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -156,10 +150,7 @@ public class PaymentsControllerTests
         var mockLogger = new Mock<ILogger<PaymentService>>();
         var paymentService = new PaymentService(mockBankClient.Object, mockLogger.Object);
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.ServiceUnavailable),
-            null,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.ServiceUnavailable, null);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -311,10 +302,7 @@ public class PaymentsControllerTests
             Code = "auth123"
         };
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.OK),
-            bankResponse,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.OK, bankResponse);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -389,10 +377,7 @@ public class PaymentsControllerTests
             Code = "auth123"
         };
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.OK),
-            bankResponse,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.OK, bankResponse);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -462,10 +447,7 @@ public class PaymentsControllerTests
             Code = "auth123"
         };
 
-        var apiResponse = new ApiResponse<BankPaymentResponse>(
-            new HttpResponseMessage(HttpStatusCode.OK),
-            bankResponse,
-            new RefitSettings());
+        var apiResponse = CreateBankResponse(HttpStatusCode.OK, bankResponse);
 
         mockBankClient.Setup(x => x.Process(It.IsAny<BankPaymentRequest>()))
             .ReturnsAsync(apiResponse);
@@ -497,4 +479,10 @@ public class PaymentsControllerTests
         Assert.NotNull(payment);
         Assert.Equal("8877", payment!.CardNumberLastFour);
     }
+
+    private static ApiResponse<BankPaymentResponse> CreateBankResponse(
+        HttpStatusCode statusCode, BankPaymentResponse? content) =>
+        new(new HttpResponseMessage(statusCode) { RequestMessage = new HttpRequestMessage() },
+            content,
+            new RefitSettings());
 }

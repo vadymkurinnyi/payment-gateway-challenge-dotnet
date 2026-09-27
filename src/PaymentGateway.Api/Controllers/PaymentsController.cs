@@ -21,7 +21,7 @@ public class PaymentsController(
     public async Task<Results<Ok<PaymentResponse>, NotFound, ProblemHttpResult>>
         GetPaymentAsync(Guid id, CancellationToken ct)
     {
-        var result = await paymentRetriever.RetrieveAsync(id, ct);
+        var result = await paymentRetriever.GetAsync(id, ct);
 
         return result.Match<Results<Ok<PaymentResponse>, NotFound, ProblemHttpResult>>(
             payment => TypedResults.Ok(PaymentResponse.From(payment)),

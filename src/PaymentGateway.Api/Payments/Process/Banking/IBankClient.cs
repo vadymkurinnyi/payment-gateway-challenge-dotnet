@@ -3,6 +3,6 @@ namespace PaymentGateway.Api.Payments.Process.Banking;
 
 public interface IBankClient
 {
-    [Post("payments")]
+    [Post("/payments")]
     public Task<ApiResponse<BankPaymentResponse>> Process(BankPaymentRequest request);
 }

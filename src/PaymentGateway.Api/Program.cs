@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 // Register Refit client for bank simulator
 var bankBaseUrl = builder.Configuration["BankSimulator:BaseUrl"] ?? "http://localhost:8080";
-builder.Services.AddRefitClient<IBankClient>()
+builder.Services.AddRefitGeneratedClient<IBankClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri(bankBaseUrl));
 
 builder.Services.AddSingleton<PaymentService>();
