@@ -18,7 +18,7 @@ public class PaymentService(IBankClient bankClient, ILogger<PaymentService> logg
         var bankRequest = new BankPaymentRequest
         {
             CardNumber = newPayment.CardNumber,
-            ExpiryDate = $"{newPayment.ExpiryMonth}/{newPayment.ExpiryYear}",
+            ExpiryDate = $"{newPayment.ExpiryMonth:D2}/{newPayment.ExpiryYear}",
             Currency = newPayment.Currency,
             Amount = newPayment.Amount,
             Cvv = newPayment.Cvv

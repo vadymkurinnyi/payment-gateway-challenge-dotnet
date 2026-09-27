@@ -35,7 +35,9 @@ public record NewPayment
 
         if (expiryMonth is < 1 or > 12)
             errors.Add(Error.Validation("ExpiryMonth", "Expiry month must be 1-12."));
-        else if (new DateTime(expiryYear, expiryMonth, 1).AddMonths(1) <= now)
+        else if (expiryYear is < 1 or > 9999)
+            errors.Add(Error.Validation("ExpiryYear", "Expiry year is invalid."));
+        else if (expiryYear < now.Year || (expiryYear == now.Year && expiryMonth < now.Month))
             errors.Add(Error.Validation("Expiry", "Card has expired."));
 
         if (string.IsNullOrEmpty(currency) || !AllowedCurrencies.Contains(currency))
